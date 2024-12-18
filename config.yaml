@@ -1,0 +1,475 @@
+
+# THIS MUST BE CALLED CONFIG.YAML WHEN RUNNING ERGOGEN LOCALLY
+
+# 1u = 19.05mm
+units:
+  # Spacing variables; they point to ergogen defaults, so we can change them globally
+  kx: u # dont let it autocomplete 'unit' its gonna glitch
+  ky: u
+
+  # Padding variables
+  px: kx + 5
+  py: ky + 5
+
+  # Case wall thickness
+  cpx: kx + 10
+  cpy: ky + 10
+
+  # M2 screw default
+  screwSize: 1.5 # Radius
+  standoffSize: 2.5 # Radius
+
+points:
+  zones:
+    mainKeys:
+      key.padding: ky + 1 # Vertical spacing of rows
+      key.spread: kx + 2 # Horizontal spacing of columns
+      key.width: kx
+      key.height: ky
+      anchor:
+        shift: [75, -120]
+      #   rotate: -15
+      columns:
+        mods:
+                # The below three lines, 
+                # and the line four lines after it
+                # do the same thing;
+                # indentation and dot notation are interchangeable
+          rows:
+            mods:
+              skip: true # On this column, skip the key on the 'mods' row
+
+          key.width: 1.25ky
+          key.splay: 8 # Rotate mod column 8º CCW
+          
+          key.column_net: GP0 # Pin footprint for pipico
+        
+        pinky: 
+        
+          # rows.mods.skip: false # Equivalent dot notation
+
+          key.spread: kx + 5 # This overrides the global key.spread earlier
+          # 'key.spread' applies to the previous column
+          
+          key.splay: 0 # Because of previous splay, the rest of
+                        # the columns in the we're in is rotated. So we need
+                        # to counteract the rotation (here we do it in two rows)
+          key.column_net: GP1
+        ring:
+        #- shift: [1, 1]
+          #key.origin: [-12, -19]
+          key.stagger: 5
+          key.splay: -2
+          key.column_net: GP2
+        middle:
+          key.stagger: 2.5
+          key.splay: -2
+          key.column_net: GP3
+        index:
+          key.stagger: -2.5
+          key.splay: -2
+          key.column_net: GP4
+        inner:
+          
+          # rows.mods.skip: true
+          
+          key.stagger: -2
+          key.splay: -2
+          key.column_net: GP5
+          
+      rows:
+        # mods: # This is the bottom row, subsequent rows are on top
+        bottom:
+          row_net: GP13
+          mirror.row_net: GP18
+        home:
+          row_net: GP12
+          mirror.row_net: GP19
+        top:
+          row_net: GP11
+          mirror.row_net: GP20
+        number:
+          padding: px # this sets padding for the next row
+          row_net: GP10
+          mirror.row_net: GP21
+        function:
+          row_net: GP9
+          mirror.row_net: GP22
+    
+    thumbfan:
+      key.padding: ky + 1 # Vertical spacing of rows
+      key.spread: kx + 0.5 # Horizontal spacing of columns
+      key.width: kx
+      key.height: ky
+      anchor:
+        rotate: 60
+        ref: mainKeys_inner_bottom
+        shift: [45, -55]
+      columns:
+        left:
+          key.width: 2kx
+          rows.bottom.skip: true
+          key.column_net: GP1
+        right:
+          key.spread:  kx + 0.5kx + 1 # relative to center of previous column; purposely separated
+          # kx + 0.5kx to show translation of center to edge, and edge to edge
+          rows.top.skip: true
+          rows.bottom.skip: true
+          key.column_net: GP2
+        keysNextToBig:
+          key.spread: -2kx - 1
+          rows.top.skip: true
+          rows.middle.skip: true
+          key.column_net: GP3
+        keysNextToBigPart2:
+          rows.top.skip: true
+          rows.middle.skip: true
+          key.column_net: GP4
+        keysNextToBigPart3:
+          rows.top.skip: true
+          rows.middle.skip: true
+          key.column_net: GP5
+
+      rows:
+        bottom:
+          row_net: GP15
+          mirror.row_net: GP16
+        middle:
+          row_net: GP14
+          mirror.row_net: GP17
+        top:
+          row_net: GP13
+          mirror.row_net: GP18
+
+
+  rotate: -15
+  mirror: &mirror
+    ref: thumbfan_right_bottom # relative to 'thumbfan' cluster, 'right' column, 'bottom' row
+    distance: 2kx
+
+outlines:
+  keys:
+  - what: rectangle # Four-sided shape
+    where: true # On every key
+    size: [kx, ky] # Size of outline 
+  keys_withPadding:
+  - what: rectangle
+    where: true
+    size: [px, py]
+  board:
+  - what: polygon
+    operation: stack
+    points:
+      - ref: mirror_mainKeys_mods_bottom # [mirror]_zone_column_row
+        shift: [-0.5px, -0.5px]
+      - ref: mirror_mainKeys_mods_function
+        shift: [-0.5px, 0.5px]
+      - ref: mirror_mainKeys_ring_function
+        shift: [0, 0.5px]
+      - ref: mirror_mainKeys_middle_function
+        shift: [0, 0.5px]
+      - ref: mirror_mainKeys_index_function
+        shift: [0, 0.5px]
+      - ref: mirror_mainKeys_inner_function
+        shift: [0.5px, 0.5px]
+      - ref: mirror_mainKeys_inner_top
+        shift: [0.5px, 0]
+      
+      - ref: mainKeys_inner_top
+        shift: [0.5px, 0]
+      - ref: mainKeys_inner_function
+        shift: [0.5px, 0.5px]
+      - ref: mainKeys_index_function
+        shift: [0, 0.5px]
+      - ref: mainKeys_middle_function
+        shift: [0, 0.5px]
+      - ref: mainKeys_ring_function
+        shift: [0, 0.5px]
+      - ref: mainKeys_ring_function
+        shift: [0, 0.5px]
+      - ref: mainKeys_mods_function
+        shift: [-0.5px, 0.5px]
+      - ref: mainKeys_mods_bottom
+        shift: [-0.5px, -0.5px]
+      - ref: thumbfan_keysNextToBig_bottom
+        shift: [-0.5px, -0.5px]
+      - ref: mirror_thumbfan_keysNextToBig_bottom
+        shift: [-0.5px, -0.5px]
+    fillet: 4
+
+  wallBoard:
+  - what: polygon
+    operation: stack
+    points:
+      - ref: mirror_mainKeys_mods_bottom # [mirror]_zone_column_row
+        shift: [-0.5cpx, -0.5cpx]
+      - ref: mirror_mainKeys_mods_function
+        shift: [-0.5cpx, 0.5cpx]
+      - ref: mirror_mainKeys_ring_function
+        shift: [0, 0.5cpx]
+      - ref: mirror_mainKeys_middle_function
+        shift: [0, 0.5cpx]
+      - ref: mirror_mainKeys_index_function
+        shift: [0, 0.5cpx]
+      - ref: mirror_mainKeys_inner_function
+        shift: [0.5cpx, 0.5cpx]
+      - ref: mirror_mainKeys_inner_top
+        shift: [0.5cpx, 2.5] # If you don't add +2.5 it will not work in the middle
+      
+      - ref: mainKeys_inner_top
+        shift: [0.5cpx, 2.5]
+      - ref: mainKeys_inner_function
+        shift: [0.5cpx, 0.5cpx]
+      - ref: mainKeys_index_function
+        shift: [0, 0.5cpx]
+      - ref: mainKeys_middle_function
+        shift: [0, 0.5cpx]
+      - ref: mainKeys_ring_function
+        shift: [0, 0.5cpx]
+      - ref: mainKeys_ring_function
+        shift: [0, 0.5cpx]
+      - ref: mainKeys_mods_function
+        shift: [-0.5cpx, 0.5cpx]
+      - ref: mainKeys_mods_bottom
+        shift: [-0.5cpx, -0.5cpx]
+      - ref: thumbfan_keysNextToBig_bottom
+        shift: [-0.5cpx, -0.5cpx]
+      - ref: mirror_thumbfan_keysNextToBig_bottom
+        shift: [-0.5cpx, -0.5cpx]
+    fillet: 4
+
+  # Combination outline showing keys+outline
+  outline_board_combo:
+    - name: board
+    - operation: subtract
+      name: keys
+
+  mountingPegs: # Refer to pcb holes
+    - what: circle
+      radius: screwSize
+      where:
+        ref.aggregate.parts: [mainKeys_mods_function, mainKeys_mods_number]
+        shift: [.6kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref.aggregate.parts: [mirror_mainKeys_mods_function, mirror_mainKeys_mods_number]
+        shift: [-.6kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref.aggregate.parts: [mainKeys_index_function, mainKeys_index_number]
+        shift: [.6kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref.aggregate.parts: [mirror_mainKeys_index_function, mirror_mainKeys_index_number]
+        shift: [-.6kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: [mainKeys_middle_bottom]
+        shift: [0, -2kx]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: [mirror_mainKeys_middle_bottom]
+        shift: [0, -2kx]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: [mainKeys_inner_home]
+        shift: [1.25kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref: [mirror_mainKeys_inner_home]
+        shift: [1.25kx, 0]
+    - what: circle
+      radius: screwSize
+      where:
+        ref.aggregate.parts: [thumbfan_keysNextToBig_bottom, mirror_thumbfan_keysNextToBig_bottom]
+        shift: [-0.5kx, 0]
+
+  standoffs: # Refer to pcb holes
+    - what: circle
+      radius: standoffSize
+      where:
+        ref.aggregate.parts: [mainKeys_mods_function, mainKeys_mods_number]
+        shift: [.6kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref.aggregate.parts: [mirror_mainKeys_mods_function, mirror_mainKeys_mods_number]
+        shift: [-.6kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref.aggregate.parts: [mainKeys_index_function, mainKeys_index_number]
+        shift: [.6kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref.aggregate.parts: [mirror_mainKeys_index_function, mirror_mainKeys_index_number]
+        shift: [-.6kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: [mainKeys_middle_bottom]
+        shift: [0, -2kx]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: [mirror_mainKeys_middle_bottom]
+        shift: [0, -2kx]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: [mainKeys_inner_home]
+        shift: [1.25kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref: [mirror_mainKeys_inner_home]
+        shift: [1.25kx, 0]
+    - what: circle
+      radius: standoffSize
+      where:
+        ref.aggregate.parts: [thumbfan_keysNextToBig_bottom, mirror_thumbfan_keysNextToBig_bottom]
+        shift: [-0.5kx, 0]
+
+
+pcbs: # not pcb
+  gundamBowtie:
+    outlines: # not outline
+      main:
+        outline: board
+    footprints:
+      mx_hotswap:
+        what: mx
+        where: true
+        params:
+          keycaps: true
+          reverse: false
+          hotswap: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: diode
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [0, -5]
+      pipico:
+        what: pipico # Make sure to check the config's .js file to see params (they are not the same default across)
+        params:
+          class: 'back'
+          mountingType: 'throughole'
+          # orientation: "down"
+        where:
+          # ref: mainKeys_inner_number
+          # The below line is a way we can set a ref in between two points
+          ref.aggregate.parts: [mainKeys_inner_bottom, mirror_mainKeys_inner_bottom]
+          shift: [0,0]
+          rotate: 0 #-90
+      reset: # button
+        what: button
+        params:
+          from: GND
+          to: RUN
+        where:
+          ref.aggregate.parts: [mainKeys_inner_bottom, mirror_mainKeys_inner_bottom]
+          shift: [0, -1.75kx]
+          rotate: -90
+
+      holeOuterTopLeft:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [mainKeys_mods_function, mainKeys_mods_number]
+          shift: [.6kx, 0]
+      holeOuterTopRight:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [mirror_mainKeys_mods_function, mirror_mainKeys_mods_number]
+          shift: [-.6kx, 0]
+      holeInnerTopLeft:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [mainKeys_index_function, mainKeys_index_number]
+          shift: [.6kx, 0]
+      holeInnerTopRight:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [mirror_mainKeys_index_function, mirror_mainKeys_index_number]
+          shift: [-.6kx, 0]
+      holeBottomLeft:
+        what: mountinghole
+        where:
+          ref: [mainKeys_middle_bottom]
+          shift: [0, -2kx]
+      holeBottomRight:
+        what: mountinghole
+        where:
+          ref: [mirror_mainKeys_middle_bottom]
+          shift: [0, -2kx]
+      holeInnerLeft:
+        what: mountinghole
+        where:
+          ref: [mainKeys_inner_home]
+          shift: [1.25kx, 0]
+      holeInnerRight:
+        what: mountinghole
+        where:
+          ref: [mirror_mainKeys_inner_home]
+          shift: [1.25kx, 0]
+      holeBottom:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [thumbfan_keysNextToBig_bottom, mirror_thumbfan_keysNextToBig_bottom]
+          shift: [-0.5kx, 0]
+
+cases:
+  bottom:
+    - name: board
+      extrude: 1
+  bottomForWalls:
+    - name: wallBoard
+      extrude: 1
+  _outerWall:
+    - name: wallBoard
+      extrude: 4
+  _innerWall:
+    - name: board
+      extrude: 4
+  walls:
+    - what: case
+      name: _outerWall
+      operation: add
+    - what: case
+      name: _innerWall
+      operation: subtract
+  _holes:
+    - name: mountingPegs
+      extrude: 4
+  _standoffs:
+    - name: standoffs
+      extrude: 4
+
+  case:
+    - what: case
+      name: walls
+      operation: add
+    - what: case
+      name: _standoffs
+      operation: add
+    - what: case
+      name: _holes
+      operation: subtract
+    - what: case
+      name: bottomForWalls
+      operation: add
+
+# ergogen .
+# ergogen . && for i in output/cases/*.jscad; do npx @jscad/cli@1 "$i" -of stla; done   
