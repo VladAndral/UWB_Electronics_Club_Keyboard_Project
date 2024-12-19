@@ -38501,17 +38501,6 @@
 		(uuid "aa9ec6ca-e882-46e1-b825-266decd9ecda")
 	)
 	(gr_arc
-		(start 275.423668 55.126845)
-		(mid 275.426951 55.125838)
-		(end 275.430239 55.124848)
-		(stroke
-			(width 0.15)
-			(type solid)
-		)
-		(layer "Edge.Cuts")
-		(uuid "b14995fa-0deb-4b37-a0b2-9db7cfe3d2ad")
-	)
-	(gr_arc
 		(start 241.57418 69.452731)
 		(mid 241.941098 66.475141)
 		(end 244.275103 64.590211)
