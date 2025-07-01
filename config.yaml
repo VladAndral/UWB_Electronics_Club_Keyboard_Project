@@ -23,24 +23,23 @@ points:
   zones:
     mainKeys:
       key.padding: ky + 1 # Vertical spacing of rows
-      key.spread: kx + 2 # Horizontal spacing of columns
+      key.spread: kx + 1 # Horizontal spacing of columns
       key.width: kx
       key.height: ky
       anchor:
         shift: [75, -120]
-      #   rotate: -15
+        # rotate: -15
       columns:
         mods:
                 # The below three lines, 
-                # and the line four lines after it
-                # do the same thing;
+                # and [rows.mods.skip: true] do the same thing;
                 # indentation and dot notation are interchangeable
           rows:
             mods:
               skip: true # On this column, skip the key on the 'mods' row
 
           key.width: 1.25ky
-          key.splay: 8 # Rotate mod column 8º CCW
+          # key.splay: 8 # Rotate mod column 8º CCW
           
           key.column_net: GP0 # Pin footprint for pipico
         
@@ -59,22 +58,22 @@ points:
         #- shift: [1, 1]
           #key.origin: [-12, -19]
           key.stagger: 5
-          key.splay: -2
+          # key.splay: -2
           key.column_net: GP2
         middle:
           key.stagger: 2.5
-          key.splay: -2
+          # key.splay: -2
           key.column_net: GP3
         index:
           key.stagger: -2.5
-          key.splay: -2
+          # key.splay: -2
           key.column_net: GP4
         inner:
           
           # rows.mods.skip: true
           
           key.stagger: -2
-          key.splay: -2
+          # key.splay: -2
           key.column_net: GP5
           
       rows:
@@ -104,7 +103,7 @@ points:
       anchor:
         rotate: 60
         ref: mainKeys_inner_bottom
-        shift: [45, -55]
+        shift: [60, -30]
       columns:
         left:
           key.width: 2kx
@@ -160,7 +159,7 @@ outlines:
   - what: polygon
     operation: stack
     points:
-      - ref: mirror_mainKeys_mods_bottom # [mirror]_zone_column_row
+      - ref: mirror_mainKeys_mods_bottom # API: [mirror]_zone_column_row
         shift: [-0.5px, -0.5px]
       - ref: mirror_mainKeys_mods_function
         shift: [-0.5px, 0.5px]
@@ -338,10 +337,9 @@ outlines:
         ref.aggregate.parts: [thumbfan_keysNextToBig_bottom, mirror_thumbfan_keysNextToBig_bottom]
         shift: [-0.5kx, 0]
 
-
-pcbs: # not pcb
+pcbs: # not the same as 'pcb'
   gundamBowtie:
-    outlines: # not outline
+    outlines: # not the same as 'outline'
       main:
         outline: board
     footprints:
@@ -471,5 +469,6 @@ cases:
       name: bottomForWalls
       operation: add
 
+# When running ergogen locally, execute the following in command line:
 # ergogen .
 # ergogen . && for i in output/cases/*.jscad; do npx @jscad/cli@1 "$i" -of stla; done   
